@@ -1,0 +1,16 @@
+Add-Migration InitialCreate -Project Hotel.Infrastructure -StartupProject Hotel.Web
+
+Update-Database -Project Hotel.Infrastructure -StartupProject Hotel.Web
+
+
+
+Add-Migration InitialCreate -Project UTB.Eshop.Infrastructure -StartupProject UTB.Eshop24
+
+Update-Database -Project UTB.Eshop.Infrastructure -StartupProject UTB.Eshop24
+
+
+
+
+Add-Migration UpdateDeleteBehaviorForCartItems -Project Hotel.Infrastructure -StartupProject Hotel.Web
+
+Update-Database -Project Hotel.Infrastructure -StartupProject Hotel.Web

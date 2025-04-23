@@ -1,0 +1,150 @@
+﻿<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - Správa hotelu</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        flatpickr.localize(flatpickr.l10ns.cs);
+    </script>
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .navbar {
+            background-color: #343a40;
+        }
+
+        .navbar-brand, .nav-link {
+            color: #ffffff !important;
+        }
+
+            .nav-link:hover {
+                color: #ffc107 !important;
+            }
+
+        .btn-link {
+            color: #ffc107 !important;
+            text-decoration: none;
+        }
+
+        .rating-error {
+            color: red;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+
+        .star-rating .fa-star, /* Plné hvězdičky */
+        .star-rating .fa-star-o { /* Ohraničené hvězdičky */
+            color: #ffc107; /* Zlatá barva */
+            font-size: 2rem; /* Velikost hvězdiček */
+            cursor: pointer;
+            margin-right: 5px;
+            padding: 5px; /* Prostor kolem hvězdičky */
+        }
+
+        .btn-link:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            background-color: #343a40;
+            color: #ffffff;
+            padding: 20px 0;
+            text-align: center;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">Hotel Luxor</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/">Domů</a></li>
+                    @if (Context.User.Identity.IsAuthenticated && Context.User.IsInRole("Admin"))
+                {
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Admin
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="adminDropdown">
+                            <li><a class="dropdown-item" href="/Admin/Room">Správa pokojů</a></li>
+                            <li><a class="dropdown-item" href="/Admin/Role">Správa rolí</a></li>
+                            <li><a class="dropdown-item" href="/Admin/AdminReview">Správa recenzí</a></li>
+                            <li><a class="dropdown-item" href="/Admin/AdminReservation">Správa rezervací</a></li>
+                        </ul>
+                    </li>
+                }
+                @if (Context.User.Identity.IsAuthenticated && Context.User.IsInRole("Manager"))
+                {
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="managerDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Manažer
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="managerDropdown">
+                            <li><a class="dropdown-item" href="/Manager/Room">Správa pokojů</a></li>
+                            <li><a class="dropdown-item" href="/Manager/ManagerReservation">Správa rezervací</a></li>
+                            <li><a class="dropdown-item" href="/Manager/ManagerReview">Správa recenzí</a></li>
+                        </ul>
+                    </li>
+                }
+
+                    <li class="nav-item"><a class="nav-link" href="/User/Room">Dostupné pokoje</a></li>
+                    @if (Context.User.Identity.IsAuthenticated)
+                    {
+                        <li class="nav-item"><a class="nav-link" href="/User/Cart">Můj košík</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/User/Reservation/MyReservations">Moje rezervace</a></li>
+                        <li class="nav-item">
+                            <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-link nav-link">Odhlásit se</button>
+                            </form>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item"><a class="nav-link" href="/Account/Login">Přihlásit se</a></li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container mt-5">
+        @RenderBody()
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>© @DateTime.Now.Year Hotel Luxor. Všechna práva vyhrazena.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@3.2.12/dist/jquery.validate.unobtrusive.min.js"></script>
+    <script>
+        $(function () 
+            $("form").each(function () {
+                $(this).removeData("validator");
+                $(this).removeData("unobtrusiveValidation");
+                $.validator.unobtrusive.parse($(this));
+            });
+        });
+    </script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

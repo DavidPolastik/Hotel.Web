@@ -1,0 +1,8 @@
+C:\Users\david\Desktop\Hotel\Hotel.Web\obj\Debug\net8.0\Hotel - Backup.Web.csproj.AssemblyReference.cache
+C:\Users\david\Desktop\Hotel\Hotel.Web\obj\Debug\net8.0\Hotel - Backup.Web.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\david\Desktop\Hotel\Hotel.Web\obj\Debug\net8.0\Hotel - Backup.Web.AssemblyInfoInputs.cache
+C:\Users\david\Desktop\Hotel\Hotel.Web\obj\Debug\net8.0\Hotel - Backup.Web.AssemblyInfo.cs
+C:\Users\david\Desktop\Hotel\Hotel.Web\obj\Debug\net8.0\Hotel - Backup.Web.csproj.CoreCompileInputs.cache
+C:\Users\david\Desktop\Hotel\Hotel.Web\obj\Debug\net8.0\Hotel - Backup.Web.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\david\Desktop\Hotel\Hotel.Web\obj\Debug\net8.0\Hotel - Backup.Web.RazorAssemblyInfo.cache
+C:\Users\david\Desktop\Hotel\Hotel.Web\obj\Debug\net8.0\Hotel - Backup.Web.RazorAssemblyInfo.cs

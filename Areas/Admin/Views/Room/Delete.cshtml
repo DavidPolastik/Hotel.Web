@@ -1,0 +1,21 @@
+﻿@model Hotel.Domain.Entities.Room
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Smazat pokoj";
+}
+
+<h1>Smazat pokoj</h1>
+
+<div>
+    <p>Opravdu chcete tento pokoj smazat?</p>
+    <p><strong>Název pokoje:</strong> @Model.RoomName</p>
+    <p><strong>Číslo pokoje:</strong> @Model.RoomNumber</p>
+</div>
+
+<form asp-action="DeleteConfirmed" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Smazat</button>
+    <a asp-action="Index" class="btn btn-secondary">Zrušit</a>
+</form>

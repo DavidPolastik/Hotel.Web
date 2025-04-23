@@ -1,0 +1,39 @@
+﻿@model Hotel.Application.ViewModels.ReservationEditViewModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Upravit rezervaci";
+}
+
+<h1>Upravit rezervaci</h1>
+
+<form asp-action="Edit" method="post">
+    @Html.AntiForgeryToken()
+
+    <!-- Skryté ID rezervace -->
+    <input type="hidden" asp-for="Id" />
+
+    <!-- Výběr pokoje -->
+    <div class="form-group">
+        <label asp-for="RoomId">Pokoj:</label>
+        <select asp-for="RoomId" class="form-control" asp-items="ViewBag.Rooms"></select>
+        <span asp-validation-for="RoomId" class="text-danger"></span>
+    </div>
+
+    <!-- Datum příjezdu -->
+    <div class="form-group">
+        <label asp-for="CheckInDate">Datum příjezdu:</label>
+        <input asp-for="CheckInDate" type="date" class="form-control" />
+        <span asp-validation-for="CheckInDate" class="text-danger"></span>
+    </div>
+
+    <!-- Datum odjezdu -->
+    <div class="form-group">
+        <label asp-for="CheckOutDate">Datum odjezdu:</label>
+        <input asp-for="CheckOutDate" type="date" class="form-control" />
+        <span asp-validation-for="CheckOutDate" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Uložit</button>
+    <a asp-action="Index" class="btn btn-secondary">Zrušit</a>
+</form>

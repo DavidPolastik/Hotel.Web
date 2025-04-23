@@ -1,0 +1,49 @@
+﻿@model IEnumerable<Hotel.Domain.Entities.User>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Správa rolí";
+}
+
+<h1>Správa uživatelských rolí</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Jméno</th>
+            <th>Email</th>
+            <th>Aktuální role</th>
+            <th>Akce</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Name</td>
+                <td>@user.Email</td>
+                <td>@user.Role</td>
+                <td>
+                    <!-- Formulář pro změnu role -->
+                    <form method="post" asp-action="ChangeRole" style="display:inline;">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@user.Id" />
+                        <select name="newRole" class="form-select form-select-sm" style="display:inline; width:auto;">
+                            <option value="Admin" selected="@(user.Role == "Admin")">Administrátor</option>
+                            <option value="User" selected="@(user.Role == "User")">Uživatel</option>
+                            <option value="Manager" selected="@(user.Role == "Manager")">Manažer</option>
+                        </select>
+                        <button type="submit" class="btn btn-warning btn-sm">Změnit roli</button>
+                    </form>
+
+                    <!-- Mazání uživatele -->
+                    <form method="post" asp-action="Delete" style="display:inline;">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@user.Id" />
+                        <button type="submit" class="btn btn-danger btn-sm">Smazat</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,97 @@
+﻿@model Hotel.Application.ViewModels.CreateRoomViewModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Přidat nový pokoj";
+}
+
+<h1>Přidat nový pokoj</h1>
+
+<form asp-area="Admin"
+      asp-controller="Room"
+      asp-action="Create"
+      method="post"
+      enctype="multipart/form-data">
+
+    <!-- ANTI-FORGERY MUSÍ být uvnitř <form> -->
+    @Html.AntiForgeryToken()
+
+    <!-- Zde se zobrazí přehled případných chyb z model validace -->
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="form-group">
+        <label for="RoomName">Název pokoje:</label>
+        <input asp-for="RoomName" class="form-control" placeholder="Zadejte název pokoje" />
+        <span asp-validation-for="RoomName" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="RoomNumber">Číslo pokoje:</label>
+        <input asp-for="RoomNumber" class="form-control" placeholder="Zadejte číslo pokoje" />
+        <span asp-validation-for="RoomNumber" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="Capacity">Kapacita pokoje:</label>
+        <input asp-for="Capacity" class="form-control" placeholder="Zadejte kapacitu pokoje" />
+        <span asp-validation-for="Capacity" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="PricePerNight">Cena za noc:</label>
+        <input asp-for="PricePerNight" class="form-control" type="number" placeholder="Zadejte cenu za noc" />
+        <span asp-validation-for="PricePerNight" class="text-danger"></span>
+    </div>
+
+    <div class="form-group form-check">
+        <input asp-for="IsAvailable" class="form-check-input" />
+        <label for="IsAvailable" class="form-check-label">Je k dispozici</label>
+        <span asp-validation-for="IsAvailable" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="Images">Nahrajte obrázky pokoje:</label>
+        <input asp-for="Images" type="file" multiple class="form-control" id="imagesInput" />
+        <span asp-validation-for="Images" class="text-danger"></span>
+
+        <!-- Div pro náhled obrázků -->
+        <div id="preview" class="mt-3"></div>
+    </div>
+
+    <button type="submit" class="btn btn-success mt-3">Vytvořit</button>
+</form>
+
+<!-- Zde můžeme volat sekci Scripts -->
+@section Scripts {
+    <!-- Volání _ValidationScriptsPartial, pokud v Layoutu nemáte jQuery validation -->
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        // Po výběru souborů zobraz náhled
+        const input = document.getElementById('imagesInput');
+        if (input) {
+            input.addEventListener('change', function (event) {
+                const files = event.target.files;
+                const previewDiv = document.getElementById('preview');
+
+                // Vyčistíme staré náhledy
+                previewDiv.innerHTML = '';
+
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    const reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.style.maxHeight = '150px';
+                        img.style.marginRight = '10px';
+                        previewDiv.appendChild(img);
+                    };
+
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+    </script>
+}

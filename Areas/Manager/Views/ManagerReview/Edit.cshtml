@@ -1,0 +1,25 @@
+﻿@model Hotel.Domain.Entities.Review
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Upravit komentář recenze";
+}
+
+<h1>Upravit komentář recenze</h1>
+
+<form asp-action="Edit" method="post">
+    @Html.AntiForgeryToken()
+
+    <!-- Skrytý ID recenze -->
+    <input type="hidden" asp-for="Id" />
+
+    <!-- Komentář -->
+    <div class="form-group">
+        <label asp-for="Comment">Komentář:</label>
+        <textarea asp-for="Comment" class="form-control" rows="5"></textarea>
+        <span asp-validation-for="Comment" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Uložit</button>
+    <a asp-action="Index" class="btn btn-secondary">Zrušit</a>
+</form>

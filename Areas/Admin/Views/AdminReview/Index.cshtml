@@ -1,0 +1,40 @@
+﻿@model IEnumerable<Hotel.Domain.Entities.Review>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Správa recenzí";
+}
+
+<h1>Správa recenzí</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Uživatel</th>
+            <th>Rezervace</th>
+            <th>Hodnocení</th>
+            <th>Komentář</th>
+            <th>Datum</th>
+            <th>Akce</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var review in Model)
+        {
+            <tr>
+                <td>@review.UserId</td>
+                <td>@review.ReservationId</td>
+                <td>@review.Rating</td>
+                <td>@review.Comment</td>
+                <td>@review.Date.ToShortDateString()</td>
+                <td>
+                    <a href="@Url.Action("Edit", "AdminReview", new { id = review.Id, area = "Admin" })" class="btn btn-warning btn-sm">Upravit</a>
+                    <form method="post" asp-action="Delete" asp-route-id="@review.Id" style="display:inline;">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-danger btn-sm">Smazat</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

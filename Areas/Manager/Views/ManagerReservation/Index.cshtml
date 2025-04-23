@@ -1,0 +1,38 @@
+﻿@model IEnumerable<Hotel.Domain.Entities.Reservation>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Správa rezervací";
+}
+
+<h1>Správa rezervací</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Jméno uživatele</th>
+            <th>Číslo pokoje</th>
+            <th>Datum příjezdu</th>
+            <th>Datum odjezdu</th>
+            <th>Akce</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var reservation in Model)
+        {
+            <tr>
+                <td>@reservation.User.Name</td> <!-- Zobrazení jména uživatele -->
+                <td>@reservation.Room.RoomNumber</td> <!-- Zobrazení čísla pokoje -->
+                <td>@reservation.CheckInDate.ToShortDateString()</td>
+                <td>@reservation.CheckOutDate.ToShortDateString()</td>
+                <td>
+                    <a href="@Url.Action("Edit", "ManagerReservation", new { id = reservation.Id, area = "Manager" })" class="btn btn-warning btn-sm">Upravit</a>
+                    <form method="post" asp-action="Delete" asp-route-id="@reservation.Id" style="display:inline;">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-danger btn-sm">Smazat</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

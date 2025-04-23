@@ -1,0 +1,67 @@
+﻿@model List<Hotel.Domain.Entities.CartItem>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Vaše rezervace";
+
+    // Pomocná funkce pro skloňování kapacity
+    Func<int, string> SkolnovaniOsob = (count) =>
+    {
+        return count switch
+        {
+            1 => "1 osoba",
+            >= 2 and <= 4 => $"{count} osoby",
+            _ => $"{count} osob"
+        };
+    };
+}
+
+<h1>Vaše rezervace</h1>
+
+@if (!Model.Any())
+{
+    <p>Váš košík je prázdný.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Název pokoje</th>
+                <th>Číslo pokoje</th>
+                <th>Kapacita</th>
+                <th>Cena za noc</th>
+                <th>Datum příjezdu</th>
+                <th>Datum odjezdu</th>
+                <th>Akce</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.RoomName</td>
+                    <td>@item.RoomNumber</td>
+                    <td>@SkolnovaniOsob(item.Capacity)</td>
+                    <td>@item.PricePerNight.ToString("N0") Kč</td>
+                    <td>@item.CheckInDate.ToShortDateString()</td>
+                    <td>@item.CheckOutDate.ToShortDateString()</td>
+                    <td>
+                        <form asp-area="User" asp-controller="Cart" asp-action="RemoveFromCart" method="post">
+                            <input type="hidden" name="cartItemId" value="@item.Id" />
+                            <button type="submit" class="btn btn-danger">Odstranit</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <form asp-area="User" asp-controller="Cart" asp-action="ClearCart" method="post">
+        <button type="submit" class="btn btn-warning">Vyprázdnit košík</button>
+    </form>
+
+    <form asp-area="User" asp-controller="Reservation" asp-action="ConfirmReservation" method="post">
+        <button type="submit" class="btn btn-success mt-3">Potvrdit rezervaci</button>
+    </form>
+}

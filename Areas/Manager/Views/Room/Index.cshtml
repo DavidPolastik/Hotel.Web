@@ -1,0 +1,38 @@
+﻿@model IEnumerable<Hotel.Domain.Entities.Room>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Správa pokojů";
+}
+
+<h1>Správa pokojů</h1>
+<a href="/Manager/Room/Create" class="btn btn-primary mb-3">Přidat nový pokoj</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Číslo pokoje</th>
+            <th>Název pokoje</th>
+            <th>Typ pokoje</th>
+            <th>Cena</th>
+            <th>Dostupnost</th>
+            <th>Akce</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var room in Model)
+        {
+            <tr>
+                <td>@room.RoomNumber</td>
+                <td>@room.RoomName</td>
+                <td>@room.Capacity</td>
+                <td>@room.PricePerNight.ToString("0")</td> 
+                <td>@(room.IsAvailable ? "Ano" : "Ne")</td>
+                <td>
+                    <a href="/Manager/Room/Edit/@room.Id" class="btn btn-warning">Upravit</a>
+                    <a href="/Manager/Room/Delete/@room.Id" class="btn btn-danger">Smazat</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

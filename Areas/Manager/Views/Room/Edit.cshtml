@@ -1,0 +1,98 @@
+﻿@model Hotel.Application.ViewModels.EditRoomViewModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Upravit pokoj";
+}
+
+<h1>Upravit pokoj</h1>
+
+<form asp-action="Edit" method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <!-- Skryté pole pro ID pokoje -->
+    <input asp-for="Id" type="hidden" />
+
+    <!-- Skryté pole pro existující obrázky -->
+    <input asp-for="ExistingImages" type="hidden" id="ExistingImagesField" />
+
+    <div class="form-group">
+        <label for="RoomName">Název pokoje:</label>
+        <input asp-for="RoomName" class="form-control" />
+        <span asp-validation-for="RoomName" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="RoomNumber">Číslo pokoje:</label>
+        <input asp-for="RoomNumber" class="form-control" />
+        <span asp-validation-for="RoomNumber" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="Capacity">Kapacita:</label>
+        <input asp-for="Capacity" class="form-control" />
+        <span asp-validation-for="Capacity" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="PricePerNight">Cena za noc:</label>
+        <input asp-for="PricePerNight"
+               value="@Model.PricePerNight.ToString("0")"
+               type="number"
+               class="form-control"
+               step="1" />
+        <span asp-validation-for="PricePerNight" class="text-danger"></span>
+    </div>
+
+
+    <div class="form-group form-check">
+        <input asp-for="IsAvailable" class="form-check-input" />
+        <label for="IsAvailable" class="form-check-label">K dispozici</label>
+    </div>
+
+    <!-- EXISTUJÍCÍ obrázky -->
+    <div class="mb-3">
+        <label>Aktuální obrázky:</label>
+        @if (!string.IsNullOrEmpty(Model.ExistingImages))
+        {
+            var images = Model.ExistingImages.Split(',');
+            foreach (var image in images)
+            {
+                <div class="mb-2" id="image-@image.GetHashCode()">
+                    <img src="@image" alt="Obrázek pokoje" style="max-height: 150px;" class="mb-2" />
+                    <button type="button" class="btn btn-danger btn-sm" onclick="removeImage('@image', 'image-@image.GetHashCode()')">Odstranit</button>
+                </div>
+            }
+        }
+    </div>
+
+    <!-- NOVÉ obrázky -->
+    <div class="form-group">
+        <label for="NewImages">Nahrát nové obrázky (volitelné):</label>
+        <input asp-for="NewImages" type="file" multiple class="form-control" />
+        <span asp-validation-for="NewImages" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success mt-3">Uložit</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function removeImage(imagePath, elementId) {
+            if (confirm('Opravdu chcete tento obrázek odstranit?')) {
+                const hiddenField = document.querySelector('#ExistingImagesField');
+                const currentImages = hiddenField.value.split(',');
+                hiddenField.value = currentImages.filter(img => img !== imagePath).join(',');
+
+                // Odstranit obrázek z DOM
+                const imageElement = document.getElementById(elementId);
+                if (imageElement) {
+                    imageElement.remove();
+                }
+            }
+        }
+    </script>
+}

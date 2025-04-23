@@ -1,0 +1,160 @@
+﻿@model List<Hotel.Domain.Entities.Reservation>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Moje rezervace";
+
+    Func<int, string> SkolnovaniOsob = (count) =>
+    {
+        return count switch
+        {
+            1 => "1 osoba",
+            >= 2 and <= 4 => $"{count} osoby",
+            _ => $"{count} osob"
+        };
+    };
+}
+
+<h1 class="mb-4 text-center">Moje rezervace</h1>
+
+
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info text-center">
+        Nemáte zatím žádné rezervace.
+    </div>
+}
+else
+{
+    <table class="table table-striped table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>Číslo pokoje</th>
+                <th>Kapacita</th>
+                <th>Datum příjezdu</th>
+                <th>Datum odjezdu</th>
+                <th>Akce</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var reservation in Model)
+            {
+                <tr>
+                    <td>@reservation.Room.RoomNumber</td>
+                    <td>@SkolnovaniOsob(reservation.Room.Capacity)</td>
+                    <td>@reservation.CheckInDate.ToShortDateString()</td>
+                    <td>@reservation.CheckOutDate.ToShortDateString()</td>
+                    <td>
+                        @if (!reservation.HasReview)
+                        {
+                            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addReviewModal-@reservation.Id">
+                                Přidat recenzi
+                            </button>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success">Ohodnoceno</span>
+                        }
+                    </td>
+                </tr>
+
+                <!-- Modal pro přidání recenze -->
+                <div class="modal fade" id="addReviewModal-@reservation.Id" tabindex="-1" aria-labelledby="addReviewLabel-@reservation.Id" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addReviewLabel-@reservation.Id">Přidat recenzi</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zavřít"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="reviewForm-@reservation.Id" asp-controller="Review" asp-action="SubmitReview" asp-area="User" method="post">
+                                    <input type="hidden" name="ReservationId" value="@reservation.Id" />
+                                    <input type="hidden" name="Rating" id="rating-@reservation.Id" required />
+                                    <span class="text-danger d-none" id="rating-error-@reservation.Id">Prosím, vyberte hodnocení.</span>
+
+                                    <!-- Hodnocení hvězdičkami -->
+                                    <div class="mb-3">
+                                        <label class="form-label">Hodnocení:</label>
+                                        <div class="star-rating d-flex" id="starRating-@reservation.Id">
+                                            @for (int i = 1; i <= 5; i++)
+                                            {
+                                                <i class="fa fa-star-o fa-2x star" data-rating="@i" style="cursor: pointer;"></i>
+                                            }
+                                        </div>
+                                    </div>
+
+                                    <!-- Komentář -->
+                                    <div class="mb-3">
+                                        <label for="comment-@reservation.Id" class="form-label">Komentář:</label>
+                                        <textarea name="Comment" id="comment-@reservation.Id" class="form-control" rows="4" maxlength="500" required></textarea>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-success">Odeslat</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </tbody>
+    </table>
+}
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Inicializace hvězdiček
+            const starContainers = document.querySelectorAll('.star-rating');
+
+            starContainers.forEach(container => {
+                const stars = container.querySelectorAll('.star');
+                const hiddenInput = container.closest('.modal-body').querySelector('input[name="Rating"]');
+                const errorSpan = container.closest('.modal-body').querySelector('.text-danger');
+
+                stars.forEach(star => {
+                    star.addEventListener('click', () => {
+                        const rating = parseInt(star.getAttribute('data-rating'));
+                        hiddenInput.value = rating;
+
+                        // Aktualizace hvězdiček
+                        stars.forEach(s => {
+                            if (parseInt(s.getAttribute('data-rating')) <= rating) {
+                                s.classList.add('fa-star');
+                                s.classList.remove('fa-star-o');
+                            } else {
+                                s.classList.add('fa-star-o');
+                                s.classList.remove('fa-star');
+                            }
+                        });
+
+                        // Skrytí chyby, pokud uživatel vybere hodnocení
+                        if (errorSpan) {
+                            errorSpan.classList.add('d-none');
+                        }
+                    });
+                });
+            });
+
+            // Validace formuláře při odesílání
+            const forms = document.querySelectorAll('form[id^="reviewForm-"]');
+            forms.forEach(form => {
+                form.addEventListener('submit', (event) => {
+                    const ratingInput = form.querySelector('input[name="Rating"]');
+                    const errorSpan = form.querySelector('.text-danger');
+
+                    // Pokud není vybráno hodnocení, zobraz chybu a zastav odeslání formuláře
+                    if (!ratingInput.value || parseInt(ratingInput.value) < 1) {
+                        event.preventDefault();
+                        if (errorSpan) {
+                            errorSpan.textContent = "Prosím, vyberte hodnocení.";
+                            errorSpan.classList.remove('d-none');
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+}
+
